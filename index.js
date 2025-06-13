@@ -8,6 +8,9 @@ const io = require("socket.io")(3000, {
   },
 });
 
+console.log("\x1b[36m%s\x1b[0m", "🚀 Server is running on port 3000");
+console.log("\x1b[33m%s\x1b[0m", "📡 Waiting for connections...");
+
 // Store active tickets
 const activeTickets = new Map();
 
@@ -15,12 +18,15 @@ const activeTickets = new Map();
 let adminSocket = null;
 
 io.on("connection", (socket) => {
-  console.log("Connection Made on socket with id:", socket.id);
+  console.log(
+    "\x1b[32m%s\x1b[0m",
+    `✅ New connection established - Socket ID: ${socket.id}`
+  );
 
   // Handle admin connection
   socket.on("admin-connect", () => {
     adminSocket = socket;
-    console.log("Admin connected");
+    console.log("\x1b[35m%s\x1b[0m", "👨‍💼 Admin connected");
     // Send all active tickets to admin
     adminSocket.emit("active-tickets", {
       tickets: Array.from(activeTickets.values()),
@@ -38,6 +44,7 @@ io.on("connection", (socket) => {
     };
 
     activeTickets.set(ticketId, ticket);
+    console.log("\x1b[34m%s\x1b[0m", `🎫 New ticket created - ID: ${ticketId}`);
 
     // Notify user
     socket.emit("ticket-created", { ticketId });
@@ -53,6 +60,10 @@ io.on("connection", (socket) => {
     const ticket = activeTickets.get(data.ticketId);
     if (ticket) {
       ticket.messages.push({ text: data.message, sender: "user" });
+      console.log(
+        "\x1b[36m%s\x1b[0m",
+        `💬 User message received - Ticket ID: ${data.ticketId}`
+      );
 
       // Notify admin if connected
       if (adminSocket) {
@@ -69,6 +80,10 @@ io.on("connection", (socket) => {
     const ticket = activeTickets.get(data.ticketId);
     if (ticket) {
       ticket.messages.push({ text: data.message, sender: "admin" });
+      console.log(
+        "\x1b[33m%s\x1b[0m",
+        `👨‍💼 Admin response sent - Ticket ID: ${data.ticketId}`
+      );
 
       // Notify the specific user
       io.to(ticket.socketId).emit("admin-response", {
@@ -82,12 +97,16 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     if (socket === adminSocket) {
       adminSocket = null;
-      console.log("Admin disconnected");
+      console.log("\x1b[31m%s\x1b[0m", "👋 Admin disconnected");
     } else {
       // Remove tickets associated with disconnected user
       for (const [ticketId, ticket] of activeTickets.entries()) {
         if (ticket.socketId === socket.id) {
           activeTickets.delete(ticketId);
+          console.log(
+            "\x1b[31m%s\x1b[0m",
+            `❌ Ticket closed - ID: ${ticketId}`
+          );
           if (adminSocket) {
             adminSocket.emit("ticket-closed", { ticketId });
           }
