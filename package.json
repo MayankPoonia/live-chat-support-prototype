@@ -4,7 +4,7 @@
   "description": "Real-time support chat application",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "node index.js",
     "setup": "npm install && cd client/socket-practice && npm install",
     "dev": "concurrently \"npm start\" \"cd client/socket-practice && npm run dev\""
   },
