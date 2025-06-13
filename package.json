@@ -1,18 +1,22 @@
 {
-  "name": "testing",
+  "name": "support-chat",
   "version": "1.0.0",
-  "main": "index.js",
+  "description": "Real-time support chat application",
+  "main": "server.js",
   "scripts": {
-    "dev": "nodemon index.js"
+    "start": "node server.js",
+    "setup": "npm install && cd client/socket-practice && npm install",
+    "dev": "concurrently \"npm start\" \"cd client/socket-practice && npm run dev\""
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
   "dependencies": {
-    "socket.io": "^4.8.1"
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "socket.io": "^4.7.2"
   },
   "devDependencies": {
-    "nodemon": "^3.1.10"
+    "concurrently": "^8.2.2"
   }
 }
