@@ -55,11 +55,7 @@ cd <repository-name>
 2. Install dependencies and start the application:
 
 ```bash
-# Using npm
 npm run setup
-
-# Using yarn
-yarn setup
 ```
 
 This will:
